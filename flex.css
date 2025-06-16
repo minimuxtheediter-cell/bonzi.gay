@@ -1,0 +1,26 @@
+v-box,
+.vbox {
+  display: flex;
+  flex-direction: column;
+}
+
+h-box,
+.hbox {
+  display: flex;
+  flex-direction: row;
+}
+
+.fill {
+  flex: 1;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex_window .window_body {
+  display: flex;
+  flex-direction: column;
+}
