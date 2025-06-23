@@ -13,16 +13,32 @@
         <language>en-us</language>
 
         <item>
+            <title>Update 1.4.0 released</title>
+            <guid isPermaLink="false">1.4.0</guid>
+            <description>
+<![CDATA[<ul>
+<li>Mods can now useredit and nuke users</li>
+<li>User count is shown in the corner of the room</li>
+<li>Added tags. These can only be given by admins.</li>
+<li>Fixed rainbow animation randomly resetting</li>
+<li>Fixed topjej in /fact</li>
+<li>Fixed Automatic rejoining instantly disconnecting</li>
+<li>Added /hat bowtie. Thanks for nas mech for the hat.</li>
+</ul>]]>
+            </description>
+        <item>
             <title>Update 1.3.4 released</title>
             <guid isPermaLink="false">1.3.4</guid>
             <pubDate>Fri, 13 Jun 2025 23:13:36 +0000</pubDate>
             <description>
-<![CDATA[<ul><li>Add /vaporwave and /unvaporwave</li>
+<![CDATA[<ul>
+<li>Add /vaporwave and /unvaporwave</li>
 <li>Fixed right-click showing the wrong context menu in chat bubbles</li>
 <li>Fix bug where you could be silently disconnected (!)</li>
 <li>Fixed the logo being misaligned on mobile. Thanks to Ahmad for the fix.</li>
 <li>Added /hat horse</li>
-<li>Added the "bear" hat for blessed</li><ul>]]>
+<li>Added the "bear" hat for blessed</li>
+</ul>]]>
             </description>
         </item>
 

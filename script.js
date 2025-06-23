@@ -6,8 +6,11 @@ if (typeof String.prototype.replaceAll === "undefined") {
 }
 
 // I am a child from Israel and this is my code
+let trusted = false;
 let admin = false;
 let king = false;
+let autorejoin = true;
+let blockerror = false;
 
 const { entries, values } = Object;
 const { isArray } = Array;
@@ -38,7 +41,7 @@ function sanitize(text) {
 
 window.onclick = (e) => {
     let spoiler = e.target.closest("GAY-SPOILER");
-    if(spoiler) spoiler.classList.add("reveal");
+    if (spoiler) spoiler.classList.add("reveal");
 };
 
 let rules = {
@@ -231,6 +234,9 @@ class Bonzi {
         this.nametag = document.createElement("div");
         this.nametag.classList.add("bonzi_name");
         this.element.appendChild(this.nametag);
+        this.tag = document.createElement("div");
+        this.tag.classList.add("bonzi_tag");
+        this.element.appendChild(this.tag);
         this.bubble = document.createElement("div");
         this.bubble.classList.add("bubble");
         this.bubble.hidden = true;
@@ -242,6 +248,7 @@ class Bonzi {
 
         this.updateName();
         this.updateSprite();
+        this.updateTag();
 
         this.element.onpointerdown = (e) => {
             if (this.bubble.contains(e.target)) return;
@@ -280,16 +287,9 @@ class Bonzi {
             selector: `#${this.element.id}`,
             build: () => {
                 let extra = {};
-                if (admin || king) {
+                if (trusted || king || admin) {
+                    // coded like a true React programmer
                     extra = {
-                        "kick": {
-                            name: "Kick",
-                            callback: () => {
-                                socket.emit("command", {
-                                    list: ["kick", this.id],
-                                });
-                            },
-                        },
                         "bless": {
                             name: "Bless",
                             callback: () => {
@@ -298,31 +298,65 @@ class Bonzi {
                                 });
                             },
                         },
-                        "teFbwmpban": {
-                            name: "Temp Ban",
+                        "nameedit": {
+                            name: "Change Name",
                             callback: () => {
                                 socket.emit("command", {
-                                    list: ["tempban", this.id],
+                                    list: ["nameedit", this.id, prompt("give this guy a name")],
                                 });
-                            }
+                            },
                         },
-                        ...(admin ? {
-                            "ban": {
-                                name: "Ban",
+                        "tagedit": {
+                            name: "Change Tag",
+                            callback: () => {
+                                socket.emit("command", {
+                                    list: ["tagedit", this.id, prompt("give this guy a tag")],
+                                });
+                            },
+                        },
+                        ...(king || admin ? {
+                            "kick": {
+                                name: "Kick",
                                 callback: () => {
                                     socket.emit("command", {
-                                        list: ["ban", this.id],
+                                        list: ["kick", this.id],
                                     });
                                 },
                             },
-                            "info": {
-                                name: "Info",
+                            "teFbwmpban": {
+                                name: "Temp Ban",
                                 callback: () => {
                                     socket.emit("command", {
-                                        list: ["info", this.id],
+                                        list: ["tempban", this.id],
                                     });
+                                }
+                            },
+                            "nuke": {
+                                name: "NUKE",
+                                callback: () => {
+                                    socket.emit("command", {
+                                        list: ["nuke", this.id],
+                                    });
+                                }
+                            },
+                            ...(admin ? {
+                                "ban": {
+                                    name: "Ban",
+                                    callback: () => {
+                                        socket.emit("command", {
+                                            list: ["ban", this.id],
+                                        });
+                                    },
                                 },
-                            }
+                                "info": {
+                                    name: "Info",
+                                    callback: () => {
+                                        socket.emit("command", {
+                                            list: ["info", this.id],
+                                        });
+                                    },
+                                }
+                            } : {})
                         } : {})
                     };
                 };
@@ -425,7 +459,7 @@ class Bonzi {
         if (this.voiceSource) {
             this.voiceSource.stop();
             // This is most fragile part of the code and all bugs will happen here
-            if(this.voiceSource.onended) this.voiceSource.onended();
+            if (this.voiceSource.onended) this.voiceSource.onended();
             this.voiceSource.onended = () => { };
             if (this.voiceSource.endTimeout) {
                 this.clearDialog();
@@ -541,7 +575,7 @@ class Bonzi {
             `;
             if (!say.startsWith("-")) say = `at ${quote.name}, ${say}`;
         }
-        let html = `${quoteHTML}${markup(text)}`;
+        let html = `${quoteHTML}${text === "{TOPJEJ}" ? "<img src='./img/misc/topjej.png'>" : markup(text)}`;
         for (let word of wordBlacklist) {
             word = word.trim().toLowerCase();
             if (word.length === 0) continue;
@@ -635,10 +669,10 @@ class Bonzi {
             anim: "surf_away",
             ticks: 30
         }]);
+        usersPublic.delete(this.id);
         setTimeout(() => {
             this.deconstruct();
             bonzis.delete(this.id);
-            usersPublic.delete(this.id);
         }, 2000);
     }
 
@@ -655,10 +689,14 @@ class Bonzi {
 
         if (this.mute) {
             typing = " (muted)";
-        } if (this.userPublic.typing) {
+        } else if (this.userPublic.typing) {
             typing = ` (${this.userPublic.typing})`;
         };
         this.nametag.innerHTML = nmarkup(this.userPublic.name) + "" + typing;
+    }
+
+    updateTag() {
+        this.tag.innerHTML = nmarkup(this.userPublic.tag);
     }
 
     youtube(vid) {
@@ -779,6 +817,38 @@ class Bonzi {
         this.element.style.backgroundImage = this.toBgImg();
         this.move();
     }
+
+    explode() {
+        let explosion = document.createElement("div");
+        explosion.className = "explosion";
+        explosion.style.left = this.x + "px";
+        explosion.style.top = this.y + "px";
+        document.body.appendChild(explosion);
+        this.element.style.zIndex = "999999"; // show above chat log
+        let sfx = new Audio("./explosion.mp3");
+        sfx.play();
+        let rot = 0;
+        let x = 0;
+        let y = 0;
+        let angvel = Math.random() * 30 + 20;
+        if (Math.random() > 0.5) angvel *= -1;
+        let xvel = Math.random() * 10 + 5;
+        if (Math.random() > 0.5) xvel *= -1;
+        let yvel = -20;
+        let i = 0;
+        let interval = setInterval(() => {
+            i++;
+            yvel += 2;
+            x += xvel;
+            rot += angvel;
+            y += yvel;
+            this.element.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+            if (i > 120) {
+                clearInterval(interval);
+                explosion.remove();
+            }
+        }, 33)
+    }
 }
 
 window.onload = () => {
@@ -849,6 +919,7 @@ function bonzisCheck() {
             let bonzi = bonzis.get(key);
             bonzi.userPublic = public;
             bonzi.updateName();
+            bonzi.updateTag();
             if (bonzi.color != public.color) {
                 bonzi.color = public.color;
                 bonzi.updateSprite();
@@ -861,6 +932,7 @@ function bonzisCheck() {
             bonzi.exit();
         }
     }
+    usercount.innerText = usersPublic.size;
 };
 
 setInterval(() => {
@@ -894,12 +966,14 @@ login_name.onkeypress = loginOnEnter;
 login_room.onkeypress = loginOnEnter;
 
 socket.on("ban", (data) => {
+    autorejoin = false;
     page_ban.hidden = false;
     ban_reason.innerHTML = data.reason;
     ban_end.textContent = new Date(data.end).toString();
 });
 
 socket.on("kick", (data) => {
+    autorejoin = false;
     page_kick.hidden = false;
     kick_reason.innerHTML = data.reason;
 });
@@ -920,6 +994,7 @@ socket.on("disconnect", () => {
 let typingTimeout = 0;
 
 function errorFatal() {
+    if (blockerror) return;
     if (!page_ban.hidden || page_kick.hidden) {
         page_error.hidden = false;
     }
@@ -1060,6 +1135,7 @@ socket.on("leave", (data) => {
         bonzilog("server", "", msg, null, msg, false);
         bonzi.exit();
     }
+    bonzisCheck();
 });
 
 socket.on("poll", (data) => {
@@ -1093,6 +1169,11 @@ socket.on("french", (data) => {
         text: "{FRANCE} France is being fixed. Thanks for your understanding.",
         say: "France is being fixed. Thanks for your understanding.",
     }])
+});
+
+socket.on("nuke", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.explode();
 });
 
 function sendInput() {
@@ -1155,12 +1236,14 @@ chat_log_close.onclick = () => {
 };
 
 socket.on("connect", () => {
-    if (joined) {
-        socket.emit("login", {
-            name: login_name.value,
-            room: login_room.value,
-        });
-    }
+    setTimeout(() => {
+        if (joined) {
+            socket.emit("login", {
+                name: login_name.value,
+                room: login_room.value,
+            });
+        }
+    }, 500);
 });
 
 class Dialog {
@@ -1463,3 +1546,29 @@ function blessedPopup() {
 socket.on("blessed", blessedPopup);
 socket.on("king", () => king = true);
 socket.on("admin", () => admin = true);
+socket.on("trusted", () => trusted = true);
+socket.on("nuked", () => setTimeout(() => { blockerror = true; location.reload() }, 4000));
+
+function resetRainbow (el) {
+    for (let anim of el.getAnimations()) {
+        if (anim.animationName === "move") anim.startTime = 0;
+    }
+}
+
+const rainbowSelector = "gay-rainbow,gay-spoiler,code"; // can have anims
+
+const observer = new MutationObserver(mutations => {
+    for (let mutation of mutations) {
+        for (let node of mutation.addedNodes) {
+            if (!(node instanceof Element)) continue;
+
+            if (node.matches(rainbowSelector)) {
+                resetRainbow(node);
+            }
+
+            node.querySelectorAll(rainbowSelector).forEach(resetRainbow);
+        }
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });

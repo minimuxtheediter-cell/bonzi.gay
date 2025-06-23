@@ -344,7 +344,7 @@ window.BonziData = {
 			},
 			{
 				type: "text",
-				text: "<img src='./img/misc/topjej.png'></img>",
+				text: "{TOPJEJ}",
 				say: "toppest jej"
 			}
 		]

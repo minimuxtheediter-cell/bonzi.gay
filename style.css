@@ -292,7 +292,7 @@ input[type="text"] {
     bottom: -22px;
 }
 
-.bonzi_name {
+.bonzi_name, .bonzi_tag {
     border-style: solid;
     border-width: 4px 12px 4px 0;
     border-radius: 9px;
@@ -304,6 +304,18 @@ input[type="text"] {
     color: #000;
     max-width: 300px;
     overflow: hidden;
+}
+
+.bonzi_tag {
+    position: absolute;
+    top: -23px;
+    font-weight: 900;
+    font-size: 10px;
+    padding: 6px;
+}
+
+.bonzi_tag:empty {
+    display: none;
 }
 
 .greentext {
@@ -323,8 +335,6 @@ body.classic #content {
 body.vaporwave #content {
     background-color: #008080;
     background-image: url("img/desktop.vaporwave/logo.png"), url("img/desktop.vaporwave/bg.png");
-    background-position: top left, center;
-    background-repeat: no-repeat;
 }
 
 body.vaporwave #chat_bar {
@@ -381,7 +391,7 @@ body.vaporwave #chat_send:active {
 #content {
     background-color: #452066;
     background-image: url("img/desktop/logo.png"), url("img/desktop/bg.png");
-    background-position: top left, center;
+    background-position: top right, center;
     background-repeat: no-repeat;
 }
 
@@ -1111,6 +1121,21 @@ gay-rainbow code {
 .cigar { background-image: url("img/bonzi/cigar.webp"); }
 .bear { background-image: url("img/bonzi/bear.webp"); }
 
+.explosion {
+    width: 71px;
+    height: 101px;
+    position: absolute;
+    background: url("img/misc/explosion.png");
+    animation: 1s explosion steps(17) 1 forwards;
+    transform: translate(65px, 30px) scale(2);
+    image-rendering: pixelated;
+    pointer-events: none;
+    z-index: 9998;
+}
+
+@keyframes explosion {
+    100% { background-position: -1207px; }
+}
 
 /*!
  * jQuery contextMenu - Plugin for simple contextMenu handling
