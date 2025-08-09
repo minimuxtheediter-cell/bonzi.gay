@@ -415,13 +415,13 @@ BonziData.event_list_triggered = [
 	},
 	{
 		type: "text",
-		text: "I sexually identify as BonziBUDDY. Ever since I was a young gorilla I dreamed of invading desktops dropping hot sticky tootorals on disgusting PC users.",
-		say: "I sexually identify as BonziBUDDY. Ever since I was a young gorilla I dreamed of invading desktops dropping hot sticky tootorals on disgusting PC users."
+		text: "I secretly identify as BonziBUDDY. Ever since I was a young gorilla I dreamed of invading desktops dropping hot sticky tootorals on disgusting PC users.",
+		say: "I secretly identify as BonziBUDDY. Ever since I was a young gorilla I dreamed of invading desktops dropping hot sticky tootorals on disgusting PC users."
 	},
 	{
 		type: "text",
-		text: "People say to me that a person being a BonziBUDDY is impossible and that I’m a fucking virus but I don’t care, I’m beautiful.",
-		say: "People say to me that a person being a BonziBUDDY is impossible and that I'm a fucking virus but I dont care, I'm beautiful."
+		text: "People say to me that a person being a BonziBUDDY is hard and I’m a virus but I don’t care, I’m beautiful.",
+		say: "People say to me that a person being a BonziBUDDY is hard and I'm a virus but I dont care, I'm beautiful."
 	},
 	{
 		type: "text",
@@ -430,8 +430,8 @@ BonziData.event_list_triggered = [
 	},
 	{
 		type: "text",
-		text: "If you can’t accept me you’re a gorillaphobe and need to check your file permissions. Thank you for being so understanding.",
-		say: "If you cant accept me your a gorillaphobe and need to check your file permissions. Thank you for being so understanding."
+		text: "If you can’t accept me you need a mac and need to check your file permissions. Thank you for being so understanding.",
+		say: "If you cant accept me you need a mac and need to check your file permissions. Thank you for being so understanding."
 	},
 	{
 		type: "idle"
@@ -468,7 +468,8 @@ BonziData.event_list_linux = [
 BonziData.event_list_pawn = [
 	{
 		type: "text",
-		text: "Hi, my name is BonziBUDDY, and this is my website. I meme here with my old harambe, and my son, Clippy. Everything in here has an ad and a fact. One thing I've learned after 17 years - you never know what is gonna give you some malware."
+		text: "Hi, my name is BonziBUDDY, and this is my website. I am here with my old harambe son, Clippy. Everything in here has is ad free. One thing I've learned after 17 years - you never know what is gonna give you some fun."
 	},
+
 
 ];
